@@ -36,19 +36,7 @@ class UserManager(auth_models.BaseUserManager):
         user.save()
         return user
 
-    def create_admins(self,  first_name:str, last_name:str, email:str , password : str,card_id:str = None) -> "User":
-        user= self.create_user(
-            first_name=first_name,
-            last_name=last_name,
-            email=email,
-            password=password,
-            is_staff=True,
-            is_superuser= False)
-        user.card_id=card_id
 
-
-        user.save()
-        return user
 
 
 
