@@ -1,9 +1,17 @@
-from rest_framework import views, response, exceptions, permissions
+from rest_framework import views, response, exceptions, permissions, status
 from .serializers import UserSerializer
 from . import services, authentication
 
 
-class RegisterApi(views.APIView):
+class RegisterApi(views.APIView): # /api/register
+#request example
+# {
+# "first_name":"vjeko",
+# "last_name":"rezic",
+# "email":"vjekogmf@gmail.com",
+# "password":"test",
+# "card_id":"0007787585"
+# }
 
     def post(self, request):
         serializer = UserSerializer(data=request.data)
@@ -20,12 +28,22 @@ class RegisterApi(views.APIView):
         return response.Response(data=serializer.data)
 
 
-class LoginApi(views.APIView):
-    def post(self, request):
-        email = request.data["email"]
-        password = request.data["password"]
+class LoginApi(views.APIView): #/api/login
 
-        user = services.get_user_by_email(email=email)
+#request example
+# {
+# "email":"vjekogmf@gmail.com",
+# "password":"test"
+# }
+
+    def post(self, request):
+        try:
+            email = request.data["email"]
+            password = request.data["password"]
+
+            user = services.get_user_by_email(email=email)
+        except: 
+            return response.Response(data={"message":"Bad Request"}, status = status.HTTP_400_BAD_REQUEST)
         
         if user is None:
             raise exceptions.AuthenticationFailed("Invalid Credentials")
@@ -42,7 +60,7 @@ class LoginApi(views.APIView):
         return resp
 
 
-class UserAPI(views.APIView):
+class UserAPI(views.APIView): # /api/me
     authentication_classes=(authentication.CustomUserAuth,)
     permission_classes=(permissions.IsAuthenticated,)
 
@@ -54,7 +72,7 @@ class UserAPI(views.APIView):
         return response.Response(serializer.data)
 
 
-class LogoutAPI(views.APIView):
+class LogoutAPI(views.APIView): # /api/logout
     authentication_classes=(authentication.CustomUserAuth,)
     permission_classes=(permissions.IsAuthenticated,)
 

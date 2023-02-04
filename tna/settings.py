@@ -131,3 +131,10 @@ AUTH_USER_MODEL = 'user.User'
 CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ALLOW_CREDENTIALS = True
+USE_TZ = True
+TIME_ZONE = 'Europe/Zagreb'
+
+REST_FRAMEWORK = {
+    'DATETIME_FORMAT':"%Y-%m-%d %H:%M:%S",
+    'DATETIME_INPUT_FORMATS':["%Y-%m-%d %H:%M:%S"]
+}

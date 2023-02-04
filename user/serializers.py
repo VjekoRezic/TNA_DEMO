@@ -20,3 +20,10 @@ class UserSerializer(serializers.Serializer):
         return services.UserDataClass(**data)
 
 
+
+class UserBasicSerializer(serializers.Serializer):
+    
+    first_name=serializers.CharField()
+    last_name=serializers.CharField()
+    
+    
