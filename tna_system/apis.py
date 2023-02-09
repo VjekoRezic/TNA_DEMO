@@ -13,25 +13,20 @@ class EventController(views.APIView):   # /api/event
     authentication_classes=(authentication.CustomUserAuth,)
     permission_classes=(permissions.IsAuthenticated,)
 
-# Post request example
-# {"name" : "TEST",
-# "description":"Predavanje TEST",
-# "start":"2023-02-04 16:23:31" , 
-# "end":"2023-02-04 18:23:31"}
+
 
     def post(self, request):
         if not request.user.is_staff :
             return response.Response({"message":"Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
-        
         serializer = serializers.EventPostSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         data = serializer.validated_data
-        print(data)
+        
 
         serializer.instance = services.create_event(user=request.user, event=data)
         
-        return response.Response(data=serializer.data)
+        return response.Response({"message:Created"}, status=status.HTTP_201_CREATED)
 
     #GET doesn't need aditional data , just authenticated user 
 

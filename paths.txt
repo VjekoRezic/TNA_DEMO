@@ -1,0 +1,108 @@
+/api/login
+POST 
+{
+    "email":"vjeko@gmail.com",
+    "password":"test"
+}
+
+Druge metode nisu dopuštene
+
+
+
+
+
+/api/register
+POST 
+
+{
+"first_name":"vjeko",
+"last_name":"rezic",
+"email":"vjekogmf@gmail.com",
+"password":"test",
+"card_id":"0007787585" - opcionalno
+"is_staff" : true - po defaultu je False 
+"is_superuser" : true - po defaultu je False
+}
+
+returns {
+    "id": 6,
+    "first_name": "vjeko",
+    "last_name": "rezic",
+    "email": "vjekoTest@gmail.com",
+    "card_id": null,
+    "is_staff": true,
+    "is_superuser": true,
+    "is_deleted": false
+}
+
+
+/api/logout
+
+POST 
+bez ičega ,samo treba biti prijavljen korisnik
+
+returns {
+    "message": "Logged out"
+}
+
+
+/api/me
+
+GET 
+{
+    "id": 1,
+    "first_name": "vjeko",
+    "last_name": "rezic",
+    "email": "vjeko@gmail.com",
+    "card_id": null,
+    "is_staff": true,
+    "is_superuser": true,
+    "is_deleted": false
+}
+
+
+
+
+/api/event
+
+POST request 
+{"name" : "TEST",
+"description":"Predavanje TEST",
+"start":"2023-02-04 16:23:31" , 
+"end":"2023-02-04 18:23:31",
+"location":"ime lokacije iz dropdowna",
+"event_category":"ime kategorije iz dropdowna"}
+
+------treba dodati još provjeru je li učionica slobodna i dodati get za dropdowne 
+
+
+GET request
+ -mora biti prijavljen korisnik sa is_staff ili is_superuser
+[
+    {
+        "id": 1,
+        "name": "Event1",
+        "description": "ashfjhashd",
+        "start": "2023-02-09 15:20:55",
+        "end": "2023-02-09 18:00:00",
+        "created_by": {
+            "first_name": "vjeko",
+            "last_name": "rezic"
+        },
+        "created_at": "2023-02-09 15:22:59",
+        "updated_at": "2023-02-09 15:22:57",
+        "is_deleted": false,
+        "event_category": {
+            "id": 1,
+            "name": "Ugradbeni sustavi",
+            "description": "Kolegij iz Ugradbenih Računalnih sustava"
+        },
+        "location": {
+            "id": 1,
+            "name": "Dvorana 304",
+            "is_deleted": false
+        }
+    },.....
+
+Ako je superuser prijavljen vraća popis svih evenata , ako je staff vraća popis evenata koje je on stvorio 
+

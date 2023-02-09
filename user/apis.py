@@ -17,6 +17,7 @@ class RegisterApi(views.APIView): # /api/register
     def post(self, request):
         if not request.user.is_superuser:
             return response.Response({"message":"Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
+        print(request.data)
         serializer = UserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
