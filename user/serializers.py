@@ -10,6 +10,7 @@ class UserSerializer(serializers.Serializer):
     card_id=serializers.CharField(required=False)
     is_staff=serializers.BooleanField(default=False, required=False)
     is_superuser=serializers.BooleanField(default=False, required=False)
+    is_deleted=serializers.BooleanField(default=False, required=False)
 
 
 

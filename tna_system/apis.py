@@ -23,10 +23,11 @@ class EventController(views.APIView):   # /api/event
         if not request.user.is_staff :
             return response.Response({"message":"Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
         
-        serializer = serializers.EventSerializer(data=request.data)
+        serializer = serializers.EventPostSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         data = serializer.validated_data
+        print(data)
 
         serializer.instance = services.create_event(user=request.user, event=data)
         

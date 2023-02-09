@@ -18,7 +18,8 @@ class UserDataClass:
     card_id:str = None
     id: int = None, 
     is_staff: bool =False,
-    is_superuser:bool=False
+    is_superuser:bool=False,
+    is_deleted:bool=False
 
     @classmethod
     def from_instance(cls, user_dc:"User")->"UserDataClass":
@@ -29,7 +30,8 @@ class UserDataClass:
             id = user_dc.id,
             card_id = user_dc.card_id, 
             is_staff = user_dc.is_staff,
-            is_superuser = user_dc.is_superuser
+            is_superuser = user_dc.is_superuser,
+            is_deleted = user_dc.is_deleted
 
         )
 
@@ -44,7 +46,9 @@ def create_user(user_dc: "UserDataClass")->"UserDataClass":
             email=user_dc.email,
             card_id=user_dc.card_id,
             is_staff=user_dc.is_staff,
-            is_superuser = user_dc.is_superuser
+            is_superuser = user_dc.is_superuser, 
+            is_deleted = user_dc.is_deleted
+
 
         )
         if user_dc.password is not None:

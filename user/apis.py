@@ -12,8 +12,11 @@ class RegisterApi(views.APIView): # /api/register
 # "password":"test",
 # "card_id":"0007787585"
 # }
-
+    authentication_classes=(authentication.CustomUserAuth,)
+    permission_classes=(permissions.IsAuthenticated,)
     def post(self, request):
+        if not request.user.is_superuser:
+            return response.Response({"message":"Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
         serializer = UserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 

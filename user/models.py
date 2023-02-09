@@ -50,6 +50,7 @@ class User(auth_models.AbstractUser):
     password=models.CharField(max_length=255)
     created_at = models.DateTimeField(verbose_name='Created at', auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name='Updated at', null=True)
+    is_deleted = models.BooleanField(verbose_name="is_deleted", default=False)
     username = None
     is_active=True
     last_login=None
