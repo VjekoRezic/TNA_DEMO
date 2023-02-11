@@ -29,7 +29,7 @@ JWT_SECRET = env('JWT_SECRET')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['tna-app.herokuapp.com']
 
 
 # Application definition
