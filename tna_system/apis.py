@@ -3,6 +3,8 @@
 ## dodatna klasa za get records sa autorizacijom 
 from rest_framework import views , response, exceptions, permissions, status
 #from .serializers 
+from django.utils import timezone
+import datetime
 from user import  authentication
 from . import serializers, services
 from . import models
@@ -18,14 +20,20 @@ class EventController(views.APIView):   # /api/event
     def post(self, request):
         if not request.user.is_staff :
             return response.Response({"message":"Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
+
         serializer = serializers.EventPostSerializer(data=request.data)
+
+
         serializer.is_valid(raise_exception=True)
 
         data = serializer.validated_data
+        if (data.end<= timezone.now()) or (data.end < data.start) :
+            return response.Response({"message":"Bad request"}, status=status.HTTP_400_BAD_REQUEST)
+        if not services.check_if_availible(data):
+            return response.Response({"message:Location is already reserved for that time"}, status=status.HTTP_400_BAD_REQUEST)
         
 
         serializer.instance = services.create_event(user=request.user, event=data)
-        
         return response.Response({"message:Created"}, status=status.HTTP_201_CREATED)
 
     #GET doesn't need aditional data , just authenticated user 

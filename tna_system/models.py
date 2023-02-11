@@ -37,7 +37,8 @@ class Record(models.Model):
     out_time = models.DateTimeField(verbose_name="OUT", null=True)
     event_id = models.ForeignKey(Event, on_delete=models.CASCADE, verbose_name="Event")
     user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete = models.CASCADE, verbose_name="User")
-    record_type = models.PositiveSmallIntegerField(verbose_name="0=RFID 1=BT")
+    record_type = models.PositiveSmallIntegerField(verbose_name="0=RFID 1=BT", default=0)
+    
 
 
     def __str__(self) -> str:

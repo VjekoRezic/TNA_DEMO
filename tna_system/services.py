@@ -44,6 +44,8 @@ class EventDataClass:
 
 
 def create_event(user, event:"EventDataClass")->"EventDataClass":
+   
+
     instance= models.Event.objects.create(
         name=event.name,
         created_by=user,
@@ -111,3 +113,21 @@ def create_category(user, category:"EventCategoryDataClass")->"EventCategoryData
 
     )
     return EventCategoryDataClass.from_instance(instance)
+
+
+def check_if_availible(event):
+
+    scheduled_events = models.Event.objects.filter(start__date = event.start.date() , location__name=event.location).all()
+    for obj in scheduled_events:
+        if obj.start <= event.start <= obj.end <= event.end :
+            return False
+        
+        if obj.start<=event.start<=event.end<=obj.start:
+            return False
+        if event.start <= obj.start <= obj.end <= event.end:
+            return False
+        if event.start <= obj.start<= event.end <= obj.end:
+            return False
+
+    
+    return True
