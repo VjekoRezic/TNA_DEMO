@@ -5,7 +5,7 @@ from . import models
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from models import Event
+    from models import Event,Location, EventCategory
 
 @dataclasses.dataclass
 class EventDataClass:
@@ -58,3 +58,56 @@ def create_event(user, event:"EventDataClass")->"EventDataClass":
     )
 
     return EventDataClass.from_instance(event_model=instance)
+
+@dataclasses.dataclass
+class LocationDataClass:
+    name : str
+    is_deleted : bool = False
+    id : int = None
+    #metoda pretvara instancu klase Location u Dataclass
+    @classmethod
+    def from_instance(cls, location : "Location") -> "LocationDataClass":
+        return cls(
+            name = location.name,
+            is_deleted = location.is_deleted,
+            id = location.id
+        )
+
+def create_location(location_dc:"LocationDataClass")->"LocationDataClass":
+    instance = models.Location.objects.create(
+        name= location_dc.name,)
+
+    return LocationDataClass.from_instance(location=instance)
+
+
+    
+@dataclasses.dataclass
+class EventCategoryDataClass:
+    name: str
+    description : str
+    created_by : UserDataClass = None
+    created_at : datetime.datetime = None
+    updated_at : datetime.datetime = None
+    is_deleted : datetime.datetime = None
+    id : int = None
+    @classmethod
+    def from_instance(cls, event_category : "EventCategory")->"EventCategoryDataClass":
+        return cls(
+            name = event_category.name,
+            description = event_category.description,
+            created_by = event_category.created_by,
+            created_at = event_category.created_at,
+            updated_at = event_category.updated_at,
+            is_deleted = event_category.is_deleted,
+            id = event_category.id 
+        )
+
+def create_category(user, category:"EventCategoryDataClass")->"EventCategoryDataClass":
+    instance = models.EventCategory.objects.create(
+        name=category.name,
+        description = category.description,
+        created_by = user, 
+        is_deleted = False
+
+    )
+    return EventCategoryDataClass.from_instance(instance)

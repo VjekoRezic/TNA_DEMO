@@ -106,3 +106,74 @@ GET request
 
 Ako je superuser prijavljen vraća popis svih evenata , ako je staff vraća popis evenata koje je on stvorio 
 
+
+
+/api/location
+
+POST  /mora biti superuser
+{
+    "name":"Učionica 114"
+}
+
+GET resp
+[
+    {
+        "id": 1,
+        "name": "Dvorana 304",
+        "is_deleted": false
+    },
+    {
+        "id": 2,
+        "name": "Dvorana 104",
+        "is_deleted": false
+    }
+]
+
+
+/api/categories
+GET resp  //mora biti staff
+
+[
+    {
+        "id": 1,
+        "name": "Ugradbeni sustavi",
+        "description": "Kolegij iz Ugradbenih Računalnih sustava",
+        "created_by": {
+            "id": 1,
+            "first_name": "vjeko",
+            "last_name": "rezic",
+            "email": "vjeko@gmail.com",
+            "card_id": null,
+            "is_staff": true,
+            "is_superuser": true,
+            "is_deleted": false
+        },
+        "created_at": "2023-02-09 10:28:05",
+        "updated_at": "2023-02-09 10:27:58",
+        "is_deleted": false
+    },
+    {
+        "id": 2,
+        "name": "Testni Kolegij",
+        "description": "Opis kolegija",
+        "created_by": {
+            "id": 1,
+            "first_name": "vjeko",
+            "last_name": "rezic",
+            "email": "vjeko@gmail.com",
+            "card_id": null,
+            "is_staff": true,
+            "is_superuser": true,
+            "is_deleted": false
+        },
+        "created_at": "2023-02-10 19:35:47",
+        "updated_at": null,
+        "is_deleted": false
+    }
+]
+
+POST  
+{
+    "name":"ime",
+    "description":"Opis kategoorije"
+}
