@@ -42,14 +42,48 @@ class EventController(views.APIView):   # /api/event
 
         if not request.user.is_staff :
             return response.Response({"message":"Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
+        category=None
+        location=None
+        if "category" in request.GET and models.EventCategory.objects.filter(name=request.GET.get("category"), is_deleted=False).exists():
+            category=models.EventCategory.objects.filter(name=request.GET.get("category"), is_deleted=False).first()
+        
+        if "location" in request.GET and models.Location.objects.filter(name=request.GET.get("location"), is_deleted=False).exists(): 
+            location = models.Location.objects.filter(name=request.GET.get("location"), is_deleted=False).first()
+
+        if "active" in request.GET and request.GET.get("active")==True:
+            active=True
+        else:
+            active = False
+        
+        
         #ako je profesor(is_staff), a nije superadmin vraća mu popis predavanja koje je on kreirao
         if (request.user.is_staff) and (not request.user.is_superuser) :
-            event_list = models.Event.objects.filter(created_by=request.user).all()
+            if location and category:
+                event_list = models.Event.objects.filter(created_by=request.user, location=location, event_category=category, is_deleted=False).all()
+            if location and not category: 
+                event_list = models.Event.objects.filter(created_by=request.user, location=location, is_deleted=False).all()
+            if category and not location:
+                event_list = models.Event.objects.filter(created_by=request.user, event_category=category, is_deleted=False).all()
+            if not category and not location:
+                event_list = models.Event.objects.filter(created_by=request.user, is_deleted=False).all()
+
+
+            if active:
+                event_list.filter(end__gte = timezone.now())
+            else:
+                event_list.filter(end__lt = timezone.now())
             serializer = serializers.EventListSerializer(event_list, many=True)
             return response.Response(serializer.data, status=status.HTTP_200_OK)
 
         if request.user.is_superuser:
-            event_list = models.Event.objects.all()
+            if location and category:
+                event_list = models.Event.objects.filter( location=location, event_category=category, is_deleted=False).all()
+            if location and not category: 
+                event_list = models.Event.objects.filter(location=location, is_deleted=False).all()
+            if category and not location:
+                event_list = models.Event.objects.filter(event_category=category, is_deleted=False).all()
+            if not category and not location:
+                event_list = models.Event.objects.filter( is_deleted=False).all()
             serializer = serializers.EventListSerializer(event_list, many=True)
             return response.Response(serializer.data, status=status.HTTP_200_OK)
 

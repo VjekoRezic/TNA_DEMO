@@ -76,7 +76,9 @@ POST request
 ------treba dodati još provjeru je li učionica slobodna i dodati get za dropdowne 
 
 
-GET request
+GET request 
+
+/api/event/?location=D304&category=Ugradbeni%20isustavi&active=True
  -mora biti prijavljen korisnik sa is_staff ili is_superuser
 [
     {

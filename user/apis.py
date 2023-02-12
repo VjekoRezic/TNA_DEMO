@@ -71,6 +71,8 @@ class UserAPI(views.APIView): # /api/me
     def get(self, request):
         user = request.user
 
+        
+
         serializer= UserSerializer(user)
 
         return response.Response(serializer.data)
