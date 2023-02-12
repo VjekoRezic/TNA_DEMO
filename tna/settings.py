@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'user',
     'tna_system',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -54,8 +55,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'corsheaders.middleware.CorsMiddleware',
-    'common.middlewares.CorsMiddleware',
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
