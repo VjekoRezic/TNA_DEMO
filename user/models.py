@@ -42,7 +42,7 @@ class UserManager(auth_models.BaseUserManager):
 
 
 class User(auth_models.AbstractUser):
-    card_id = models.CharField(max_length=20, verbose_name='Card ID', null=True)
+    card_id = models.CharField(max_length=20, verbose_name='Card ID',unique=True, null=True)
 
     first_name = models.CharField(verbose_name='First name', max_length=255)
     last_name =  models.CharField(verbose_name='Last name', max_length=255)

@@ -59,7 +59,6 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
-CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = 'tna.urls'
 
@@ -151,3 +150,4 @@ REST_FRAMEWORK = {
     'DATETIME_FORMAT':"%Y-%m-%d %H:%M:%S",
     'DATETIME_INPUT_FORMATS':["%Y-%m-%d %H:%M:%S"]
 }
+

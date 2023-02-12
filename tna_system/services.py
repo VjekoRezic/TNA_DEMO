@@ -3,16 +3,17 @@ import datetime
 from user.services import UserDataClass
 from . import models
 from typing import TYPE_CHECKING
+from django.utils import timezone
 
 if TYPE_CHECKING:
-    from models import Event,Location, EventCategory
+    from models import Event,Location, EventCategory, Record
 
 @dataclasses.dataclass
 class EventDataClass:
     name : str
     description: str
-    event_category : str 
-    location : str
+    event_category : id 
+    location : id
     start : datetime.datetime = None
     end : datetime.datetime = None
     created_by : UserDataClass = None
@@ -34,8 +35,8 @@ class EventDataClass:
             created_at = event_model.created_at,
             updated_at = event_model.updated_at,
             id = event_model.id,
-            event_category = event_model.event_category.name,
-            location = event_model.location.name, 
+            event_category = event_model.event_category.id,
+            location = event_model.location.id, 
             is_deleted = event_model.is_deleted
 
 
@@ -54,8 +55,8 @@ def create_event(user, event:"EventDataClass")->"EventDataClass":
         end = event.end,
         created_at = event.created_at,
         updated_at = event.updated_at, 
-        location = models.Location.objects.filter(name=event.location).first(),
-        event_category = models.EventCategory.objects.filter(name=event.event_category).first(),
+        location = models.Location.objects.filter(id=event.location).first(),
+        event_category = models.EventCategory.objects.filter(id=event.event_category).first(),
         is_deleted = event.is_deleted
     )
 
@@ -117,17 +118,53 @@ def create_category(user, category:"EventCategoryDataClass")->"EventCategoryData
 
 def check_if_availible(event):
 
-    scheduled_events = models.Event.objects.filter(start__date = event.start.date() , location__name=event.location).all()
+    scheduled_events = models.Event.objects.filter(start__date = event.start.date() , location__id=event.location).all()
     for obj in scheduled_events:
-        if obj.start <= event.start <= obj.end <= event.end :
+        if obj.start <= event.start < obj.end <= event.end :
             return False
         
-        if obj.start<=event.start<=event.end<=obj.start:
+        if obj.start<=event.start<=event.end<=obj.end:
             return False
-        if event.start <= obj.start <= obj.end <= event.end:
+        if event.start <= obj.start < obj.end <= event.end:
             return False
-        if event.start <= obj.start<= event.end <= obj.end:
+        if event.start <= obj.start< event.end <= obj.end:
             return False
 
     
     return True
+
+@dataclasses.dataclass
+class RecordDataClass:
+    event : int
+    in_time : datetime.datetime = None
+    user : UserDataClass = None
+    out_time : datetime.datetime = None
+    id : int = None
+    @classmethod
+    def from_instance(cls, record: "Record")-> "RecordDataClass":
+        return cls(
+            event = record.event.name,
+            in_time = record.in_time,
+            user = record.user,
+            out_time = record.out_time,
+            id = record.id
+        )
+
+
+def create_record_in(user, event)-> "RecordDataClass":
+        instance= models.Record.objects.create(
+            event = models.Event.objects.filter(id=event.id).first(),
+            user=user
+        )
+
+        return RecordDataClass(instance)
+
+def create_record_out(user, event):
+    instance = models.Record.objects.filter(user=user, event=event).first()
+    print(instance.out_time)
+    instance.out_time = timezone.now()
+    instance.save()
+    return RecordDataClass(instance)
+
+
+

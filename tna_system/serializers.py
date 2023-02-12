@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from user.serializers import UserSerializer, UserBasicSerializer
-from .services import EventDataClass, LocationDataClass, EventCategoryDataClass
+from .services import EventDataClass, LocationDataClass, EventCategoryDataClass, RecordDataClass
 
 
 class EventCategoryBasicSerializer(serializers.Serializer):
@@ -78,8 +78,8 @@ class EventPostSerializer(serializers.Serializer):
     created_at = serializers.DateTimeField(required=False)
     updated_at = serializers.DateTimeField(required=False)
     is_deleted = serializers.BooleanField(required=False)
-    event_category = serializers.CharField()
-    location = serializers.CharField()
+    event_category = serializers.IntegerField()
+    location = serializers.IntegerField()
 
     def to_internal_value(self, data):
         data = super().to_internal_value(data)
@@ -87,3 +87,13 @@ class EventPostSerializer(serializers.Serializer):
         return EventDataClass(**data)
 
 
+class RecordPostSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    in_time = serializers.DateTimeField(required=False)
+    out_time = serializers.DateTimeField(required=False)
+    event = serializers.CharField()
+    user = UserBasicSerializer(read_only=True)
+
+    def to_internal_value(self, data):
+        data = super().to_internal_value(data)
+        return RecordDataClass(**data)

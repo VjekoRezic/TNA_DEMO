@@ -68,17 +68,16 @@ GET
 POST request 
 {"name" : "TEST",
 "description":"Predavanje TEST",
-"start":"2023-02-04 16:23:31" , 
-"end":"2023-02-04 18:23:31",
-"location":"ime lokacije iz dropdowna",
-"event_category":"ime kategorije iz dropdowna"}
+"start":"2023-02-15 16:23:31" , 
+"end":"2023-02-15 18:23:31",
+"location":1,
+"event_category":2}
 
-------treba dodati još provjeru je li učionica slobodna i dodati get za dropdowne 
 
 
 GET request 
 
-/api/event/?location=D304&category=Ugradbeni%20isustavi&active=True
+/api/event/?location=1&category=1&active=True
  -mora biti prijavljen korisnik sa is_staff ili is_superuser
 [
     {
