@@ -188,7 +188,7 @@ POST
     "event": 1   // id eventa
 }
 
-GET /api/record/category=1&user=3/vraća record za usera , user id se mora slati kategorija je opcionalna 
+GET /api/record/3/category=1/vraća record za usera sa id 3 , kategorija je opcionalna 
 
 primjer responsea 
 [
@@ -254,3 +254,6 @@ primjer responsea
 mora biti staff or superuser , za staff vraća popis učenika koji imaju bar jedan record na njegovom predavanju , za superusera vraća sve studente sa i bez records 
 
 GET vraća listu usera
+
+
+GET api/event/5/   detalji eventa s idem 5 

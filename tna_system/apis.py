@@ -14,7 +14,7 @@ from . import models
 class RecordController(views.APIView):
     authentication_classes=(authentication.CustomUserAuth, )
 
-    def post(self, request):
+    def post(self, request, user_id=None):
         try:
             card_id=request.data["card_id"]
             event= request.data["event"]
@@ -43,15 +43,15 @@ class RecordController(views.APIView):
             services.create_record_in(user=user, event = event)
             return response.Response({"message":"Entrance record created"}, status=status.HTTP_201_CREATED)
 
-    def get(self, request):
+    def get(self,request, user_id=None):
         #get request za records po osobi - +filter po kategoriji 
         
-        user_id = request.GET.get("user", None)
+        
         category= request.GET.get("category", None)
 
         if not user_id or not  usermodels.User.objects.filter(id=user_id).exists():
             return response.Response({"message:Bad request, user id not provided"}, status=status.HTTP_400_BAD_REQUEST)
-        if not request.user.is_staff and not request.user.is_superuser and not request.user.id==user_id:
+        if (request.user.is_staff or request.user.is_superuser or request.user.id==user_id) == False:
             return response.Response({"message":"Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
         if category:
             if models.EventCategory.objects.filter(id=category,is_deleted=False).exists():
@@ -65,7 +65,7 @@ class RecordController(views.APIView):
         serializer = serializers.RecordSerializer(record_list, many=True)
 
         return response.Response(serializer.data, status=status.HTTP_200_OK)
-        
+
 
 
 class EventController(views.APIView):   # /api/event
@@ -147,6 +147,22 @@ class EventController(views.APIView):   # /api/event
             serializer = serializers.EventListSerializer(event_list, many=True)
             return response.Response(serializer.data, status=status.HTTP_200_OK)
 
+class EventDetails(views.APIView):
+    authentication_classes=(authentication.CustomUserAuth,)
+
+    def get(self, request, event_id):
+        if not models.Event.objects.filter(id=event_id).exists():
+            return response.Response({"message":"Bad request"})
+        
+        if not request.user.is_staff :
+            return response.Response({"message":"Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        event = models.Event.objects.filter(id=event_id, is_deleted=False).first()
+        records = models.Record.objects.filter(event=event).all()
+        event_serializer= serializers.EventSerializer(event)
+        record_serializer= serializers.RecordBasicSerializer(records, many=True)
+
+        return response.Response({"event":event_serializer.data , "records":record_serializer.data}, status=status.HTTP_200_OK)
 
 
 class LocationController(views.APIView):

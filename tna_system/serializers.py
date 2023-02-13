@@ -107,3 +107,9 @@ class RecordPostSerializer(serializers.Serializer):
     def to_internal_value(self, data):
         data = super().to_internal_value(data)
         return RecordDataClass(**data)
+
+class RecordBasicSerializer(serializers.Serializer):
+    id= serializers.IntegerField(read_only=True),
+    in_time = serializers.DateTimeField(required=False)
+    out_time = serializers.DateTimeField(required=False)
+    user = UserBasicSerializer(read_only=True)
