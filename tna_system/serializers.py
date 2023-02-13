@@ -86,6 +86,16 @@ class EventPostSerializer(serializers.Serializer):
 
         return EventDataClass(**data)
 
+class RecordSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    in_time = serializers.DateTimeField(required=False)
+    out_time = serializers.DateTimeField(required=False)
+    event = EventSerializer(read_only=True)
+    user = UserBasicSerializer(read_only=True)
+
+    def to_internal_value(self, data):
+        data = super().to_internal_value(data)
+        return RecordDataClass(**data)
 
 class RecordPostSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)

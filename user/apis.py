@@ -1,6 +1,8 @@
 from rest_framework import views, response, exceptions, permissions, status
 from .serializers import UserSerializer
-from . import services, authentication
+from . import services, authentication , models
+from tna_system import models as tna_models
+
 
 
 class RegisterApi(views.APIView): # /api/register
@@ -63,6 +65,25 @@ class LoginApi(views.APIView): #/api/login
 
         return resp
 
+class UserListApi(views.APIView):
+    authentication_classes=(authentication.CustomUserAuth,)
+    permission_classes=(permissions.IsAuthenticated,)
+
+    def get(self, request):
+        if not (request.user.is_superuser or request.user.is_staff):
+            return response.Response({"message":"Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
+        if request.user.is_superuser:
+            userlist = models.User.objects.filter(is_deleted=False, is_staff=False, is_superuser=False).all()
+            
+
+
+        else :
+            userids= tna_models.Record.objects.values_list('user').filter(event__created_by=request.user).distinct()
+            userlist=models.User.objects.filter(id__in=userids, is_deleted=False, is_staff=False, is_superuser=False).all()
+            
+        serializer = UserSerializer(userlist, many=True)
+        return response.Response(serializer.data, status=status.HTTP_200_OK)
+        
 
 class UserAPI(views.APIView): # /api/me
     authentication_classes=(authentication.CustomUserAuth,)

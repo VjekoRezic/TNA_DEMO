@@ -22,7 +22,6 @@ class RecordController(views.APIView):
             card_id=None
             event=None
 
-        print(card_id , event)
 
         if event != None and models.Event.objects.filter(id=event,is_deleted=False).exists():
             event= models.Event.objects.filter(id=event, is_deleted=False).first()
@@ -44,9 +43,28 @@ class RecordController(views.APIView):
             services.create_record_in(user=user, event = event)
             return response.Response({"message":"Entrance record created"}, status=status.HTTP_201_CREATED)
 
+    def get(self, request):
+        #get request za records po osobi - +filter po kategoriji 
+        
+        user_id = request.GET.get("user", None)
+        category= request.GET.get("category", None)
 
+        if not user_id or not  usermodels.User.objects.filter(id=user_id).exists():
+            return response.Response({"message:Bad request, user id not provided"}, status=status.HTTP_400_BAD_REQUEST)
+        if not request.user.is_staff and not request.user.is_superuser and not request.user.id==user_id:
+            return response.Response({"message":"Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
+        if category:
+            if models.EventCategory.objects.filter(id=category,is_deleted=False).exists():
 
+                record_list = models.Record.objects.filter(event__category__id=category, user_id = user_id).all()
+            else:
+                return response.Response({"message":"Bad request - category doesnt exist"}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            record_list = models.Record.objects.filter( user_id = user_id).all()
+        
+        serializer = serializers.RecordSerializer(record_list, many=True)
 
+        return response.Response(serializer.data, status=status.HTTP_200_OK)
         
 
 

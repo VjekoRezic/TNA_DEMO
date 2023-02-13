@@ -161,7 +161,6 @@ def create_record_in(user, event)-> "RecordDataClass":
 
 def create_record_out(user, event):
     instance = models.Record.objects.filter(user=user, event=event).first()
-    print(instance.out_time)
     instance.out_time = timezone.now()
     instance.save()
     return RecordDataClass(instance)
