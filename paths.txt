@@ -179,6 +179,8 @@ POST
     "description":"Opis kategoorije"
 }
 
+PUT /api/categories/id kategorije koja se updata
+DELETE /api/categories/id kategorije
 
 /api/record/
 

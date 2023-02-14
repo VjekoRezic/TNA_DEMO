@@ -120,7 +120,7 @@ class EventController(views.APIView):   # /api/event
         serializer = serializers.EventPostSerializer(data=request.data)
 
 
-        if not (models.Location.objects.filter(id=request.data["location"]).exists() or models.EventCategory.objects.filter(id=request.data["event_category"]).exists()):
+        if not (models.Location.objects.filter(id=request.data["location"]).exists() or models.EventCategory.objects.filter(id=request.data["event_category"], is_deleted=False).exists()):
             return response.Response({"message":"Bad request "}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer.is_valid(raise_exception=True)
@@ -271,4 +271,46 @@ class EventCategoryController(views.APIView):
         data=serializer.validated_data
         serializer.instance = services.create_category(request.user, category=data)
         return response.Response({"message":"Created"}, status=status.HTTP_201_CREATED)
+    
+
+
+    
+
         
+class SingleEventCategoryController(views.APIView):
+
+    authentication_classes=(authentication.CustomUserAuth,)
+    def put(self, request, category=None):
+        print(category)
+        if not request.user.is_staff :
+            return response.Response({"message":"Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        if category == None or not models.EventCategory.objects.filter(id=category, is_deleted=False).exists():
+            return response.Response({"message":"Bad Request"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        serializer = serializers.EventCategoryUpdateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data=serializer.validated_data
+
+
+
+        category = models.EventCategory.objects.filter(id=category, is_deleted=False).first()
+        category.description = data.description
+        category.updated_at = timezone.now()
+        category.save()
+
+        return response.Response({"message":"Created"}, status=status.HTTP_201_CREATED)
+
+    def delete(self, request, category=None):
+        if not request.user.is_staff :
+            return response.Response({"message":"Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        if category == None or not models.EventCategory.objects.filter(id=category, is_deleted=False).exists():
+            return response.Response({"message":"Bad Request"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        category = models.EventCategory.objects.filter(id=category, is_deleted=False).first()
+        category.is_deleted=True
+        category.updated_at = timezone.now()
+        category.save()
+
+        return response.Response({"message":"Created"}, status=status.HTTP_201_CREATED)

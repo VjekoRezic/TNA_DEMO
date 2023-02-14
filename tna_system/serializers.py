@@ -3,6 +3,14 @@ from user.serializers import UserSerializer, UserBasicSerializer
 from .services import EventDataClass, LocationDataClass, EventCategoryDataClass, RecordDataClass
 
 
+class EventCategoryUpdateSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(required=False)
+    description = serializers.CharField()
+    def to_internal_value(self, data):
+        data=super().to_internal_value(data)
+        return EventCategoryDataClass(**data)
+
 class EventCategoryBasicSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     name = serializers.CharField()

@@ -86,8 +86,8 @@ def create_location(location_dc:"LocationDataClass")->"LocationDataClass":
     
 @dataclasses.dataclass
 class EventCategoryDataClass:
-    name: str
     description : str
+    name: str = None
     created_by : UserDataClass = None
     created_at : datetime.datetime = None
     updated_at : datetime.datetime = None
