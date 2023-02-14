@@ -10,6 +10,7 @@ urlpatterns = [
     path("record/", apis.RecordController.as_view(), name="record"),
     path("record/<int:user_id>/", apis.RecordController.as_view(), name="record"),
     path("users/<int:user_id>/", apis.UserRecords.as_view(), name="user records"),
+    path("next/<int:location_id>/", apis.NextEvent.as_view(), name="next"),
     
 
     

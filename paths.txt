@@ -349,3 +349,8 @@ primjer responsea
         }
     ]
 }
+
+
+
+
+GET /api/next/id lokacije

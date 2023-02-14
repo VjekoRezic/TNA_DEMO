@@ -3,6 +3,7 @@
 ## dodatna klasa za get records sa autorizacijom 
 from rest_framework import views , response, permissions, status
 #from .serializers 
+import datetime
 from django.utils import timezone
 from user import  authentication 
 from user import  models as usermodels
@@ -314,3 +315,22 @@ class SingleEventCategoryController(views.APIView):
         category.save()
 
         return response.Response({"message":"Created"}, status=status.HTTP_201_CREATED)
+
+class NextEvent(views.APIView):
+    authentication_classes=(authentication.CustomUserAuth,)
+    def get(self, request, location_id=None):
+
+        if location_id==None or not models.Location.objects.filter(id=location_id).exists():
+            return response.Response({"message":"Bad request"}, status=status.HTTP_400_BAD_REQUEST)
+        delta =timezone.now() + datetime.timedelta(minutes=15)
+        if models.Event.objects.filter(is_deleted=False, location__id=location_id, start__lte=delta, end__gte=timezone.now()).exists():
+
+
+            next = models.Event.objects.filter(is_deleted=False, location__id=location_id, start__lte=delta, end__gte=timezone.now()).first()
+            next = serializers.EventSerializer(next)
+            next = next.data
+        else: 
+            next={"message":"Loaction doesn't have any events!"}
+
+        return response.Response(next, status=status.HTTP_200_OK)
+
