@@ -143,11 +143,11 @@ class EventController(views.APIView):   # /api/event
         
         #ako je profesor(is_staff), a nije superadmin vraća mu popis predavanja koje je on kreirao
         if (request.user.is_staff) and (not request.user.is_superuser) :
-            if location != None and category != None:
+            if (location != None) and (category != None):
                 if active:
-                    event_list = models.Event.objects.filter(created_by=request.user, location=location, event_category=category, is_deleted=False, end__gte=timezone.now).all()
+                    event_list = models.Event.objects.filter(created_by=request.user, location=location, event_category=category, is_deleted=False, end__gte=timezone.now()).all()
                 else:
-                    event_list = models.Event.objects.filter(created_by=request.user, location=location, event_category=category, is_deleted=False, end__lt=timezone.now).all()
+                    event_list = models.Event.objects.filter(created_by=request.user, location=location, event_category=category, is_deleted=False, end__lt=timezone.now()).all()
 
             if location !=None and category==None:
                 if active:
@@ -175,9 +175,9 @@ class EventController(views.APIView):   # /api/event
         if request.user.is_superuser:
             if location != None and category != None:
                 if active:
-                    event_list = models.Event.objects.filter( location=location, event_category=category, is_deleted=False, end__gte=timezone.now).all()
+                    event_list = models.Event.objects.filter( location=location, event_category=category, is_deleted=False, end__gte=timezone.now()).all()
                 else:
-                    event_list = models.Event.objects.filter( location=location, event_category=category, is_deleted=False, end__lt=timezone.now).all()
+                    event_list = models.Event.objects.filter( location=location, event_category=category, is_deleted=False, end__lt=timezone.now()).all()
 
             if location !=None and category==None:
                 if active:
