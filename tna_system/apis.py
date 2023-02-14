@@ -42,14 +42,10 @@ class RecordController(views.APIView):
             
             services.create_record_in(user=user, event = event)
             return response.Response({"message":"Entrance record created"}, status=status.HTTP_201_CREATED)
-
-class UserRecords(views.APIView):
-    authentication_classes=(authentication.CustomUserAuth,)
-
+    
     def get(self,request, user_id=None):
         #get request za records po osobi - +filter po kategoriji 
         # dodati kategorije i postotke za filter
-        filter_categories=services.get_categories_and_percentage(request.user, user_id)
         category= request.GET.get("category", None)
 
         if not user_id or not  usermodels.User.objects.filter(id=user_id).exists():
@@ -83,13 +79,31 @@ class UserRecords(views.APIView):
         #     "filters":filter_categories
         # }
 
-        data={
-            "records":serializer.data,
-            "filters":filter_categories
-        }
+       
                 
 
-        return response.Response(data, status=status.HTTP_200_OK)
+        return response.Response(serializer.data, status=status.HTTP_200_OK)
+
+class UserRecords(views.APIView):
+    authentication_classes=(authentication.CustomUserAuth,)
+
+    def get(self,request, user_id=None):
+        #get request za records po osobi - +filter po kategoriji 
+        # dodati kategorije i postotke za filter
+        filter_categories=services.get_categories_and_percentage(request.user, user_id)
+
+        if not user_id or not  usermodels.User.objects.filter(id=user_id).exists():
+            return response.Response({"message:Bad request, user id not provided"}, status=status.HTTP_400_BAD_REQUEST)
+        if (request.user.is_staff or request.user.is_superuser) == False:
+            return response.Response({"message":"Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
+        
+
+
+        
+        
+                
+
+        return response.Response(filter_categories, status=status.HTTP_200_OK)
 
 
 

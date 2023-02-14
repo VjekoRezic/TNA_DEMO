@@ -270,79 +270,22 @@ primjer responsea
     }
 ]
 
-/api/users/3/?category=2
+/api/users/3/
 
 primjer responsea 
-{
-    "records": [
-        {
-            "id": 2,
-            "in_time": "2023-02-13 12:43:49",
-            "out_time": "2023-02-13 13:57:48",
-            "event": {
-                "id": 5,
-                "name": "TEST",
-                "description": "Predavanje TEST",
-                "start": "2023-02-01 12:43:31",
-                "end": "2023-02-01 18:23:31",
-                "created_by": {
-                    "id": 1,
-                    "first_name": "vjeko",
-                    "last_name": "rezic",
-                    "email": "vjeko@gmail.com",
-                    "card_id": null,
-                    "is_staff": true,
-                    "is_superuser": true,
-                    "is_deleted": false
-                },
-                "created_at": "2023-02-13 12:42:13",
-                "updated_at": null,
-                "is_deleted": false,
-                "event_category": {
-                    "id": 2,
-                    "name": "Umjetna inteligencija",
-                    "description": "Kolegij iz UI",
-                    "created_by": {
-                        "id": 1,
-                        "first_name": "vjeko",
-                        "last_name": "rezic",
-                        "email": "vjeko@gmail.com",
-                        "card_id": null,
-                        "is_staff": true,
-                        "is_superuser": true,
-                        "is_deleted": false
-                    },
-                    "created_at": "2023-02-12 19:30:42",
-                    "updated_at": null,
-                    "is_deleted": false
-                },
-                "location": {
-                    "id": 1,
-                    "name": "D304",
-                    "is_deleted": false
-                }
-            },
-            "user": {
-                "first_name": "vjeko",
-                "last_name": "rezic",
-                "id": 3
-            }
-        }
-    ],
-    "filters": [
-        {
-            "category_id": 1,
-            "category": "Ugradbeni sustavi",
-            "percentage": 100
-        },
-        {
-            "category_id": 2,
-            "category": "Umjetna inteligencija",
-            "percentage": 33
-        }
-    ]
-}
 
+[
+    {
+        "category_id": 1,
+        "category": "Ugradbeni sustavi",
+        "percentage": 50
+    },
+    {
+        "category_id": 2,
+        "category": "Umjetna inteligencija",
+        "percentage": 33
+    }
+]
 
 GET api/event/5/   detalji eventa s idem 5 
 
