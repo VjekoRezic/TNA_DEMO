@@ -43,28 +43,53 @@ class RecordController(views.APIView):
             services.create_record_in(user=user, event = event)
             return response.Response({"message":"Entrance record created"}, status=status.HTTP_201_CREATED)
 
+class UserRecords(views.APIView):
+    authentication_classes=(authentication.CustomUserAuth,)
+
     def get(self,request, user_id=None):
         #get request za records po osobi - +filter po kategoriji 
-        
-        
+        # dodati kategorije i postotke za filter
+        filter_categories=services.get_categories_and_percentage(request.user, user_id)
         category= request.GET.get("category", None)
 
         if not user_id or not  usermodels.User.objects.filter(id=user_id).exists():
             return response.Response({"message:Bad request, user id not provided"}, status=status.HTTP_400_BAD_REQUEST)
-        if (request.user.is_staff or request.user.is_superuser or request.user.id==user_id) == False:
+        if (request.user.is_staff or request.user.is_superuser) == False:
             return response.Response({"message":"Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
         if category:
-            if models.EventCategory.objects.filter(id=category,is_deleted=False).exists():
+            if request.user.is_superuser:
+                if models.EventCategory.objects.filter(id=category,is_deleted=False).exists():
 
-                record_list = models.Record.objects.filter(event__category__id=category, user_id = user_id).all()
+                    record_list = models.Record.objects.filter(event__event_category__id=category, user_id = user_id).all()
+                else:
+                    return response.Response({"message":"Bad request - category doesnt exist"}, status=status.HTTP_400_BAD_REQUEST)
             else:
-                return response.Response({"message":"Bad request - category doesnt exist"}, status=status.HTTP_400_BAD_REQUEST)
+                if models.EventCategory.objects.filter(id=category,is_deleted=False).exists():
+
+                    record_list = models.Record.objects.filter(event__category__id=category, user_id = user_id, event__created_by=request.user).all()
+                else:
+                    return response.Response({"message":"Bad request - category doesnt exist"}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            record_list = models.Record.objects.filter( user_id = user_id).all()
+            if request.user.is_superuser:
+                record_list = models.Record.objects.filter( user_id = user_id).all()
+            else :
+                record_list = models.Record.objects.filter( user_id = user_id, event__created_by=request.user).all()
+
+
         
         serializer = serializers.RecordSerializer(record_list, many=True)
+        # resp={
+        #     "data":serializer.data,
+        #     "filters":filter_categories
+        # }
 
-        return response.Response(serializer.data, status=status.HTTP_200_OK)
+        data={
+            "records":serializer.data,
+            "filters":filter_categories
+        }
+                
+
+        return response.Response(data, status=status.HTTP_200_OK)
 
 
 
