@@ -6,7 +6,7 @@ from rest_framework import views , response, permissions, status
 import datetime
 from django.utils import timezone
 from user import  authentication 
-from user import  models as usermodels
+from user import  models as usermodels, serializers as userserializer
 from . import serializers, services
 from . import models
 
@@ -92,6 +92,14 @@ class UserRecords(views.APIView):
         #get request za records po osobi - +filter po kategoriji 
         # dodati kategorije i postotke za filter
         filter_categories=services.get_categories_and_percentage(request.user, user_id)
+        user = usermodels.User.objects.get(id=user_id)
+        print(user)
+        serializer = userserializer.UserBasicSerializer(user)
+        resp={
+            "filters":filter_categories,
+            "user":serializer.data
+        }
+
 
         if not user_id or not  usermodels.User.objects.filter(id=user_id).exists():
             return response.Response({"message:Bad request, user id not provided"}, status=status.HTTP_400_BAD_REQUEST)
@@ -104,7 +112,7 @@ class UserRecords(views.APIView):
         
                 
 
-        return response.Response(filter_categories, status=status.HTTP_200_OK)
+        return response.Response(resp, status=status.HTTP_200_OK)
 
 
 

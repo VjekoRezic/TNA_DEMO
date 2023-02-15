@@ -169,7 +169,7 @@ def get_categories_and_percentage(backoffice_user, student_id ):
     filter_categories = models.Record.objects.values_list('event__event_category').filter(event__created_by=backoffice_user, user__id=student_id).distinct()
     categories=models.EventCategory.objects.filter(id__in=filter_categories).all()
     records = models.Record.objects.filter(event__event_category__id__in=filter_categories, user__id=student_id).all()
-    events = models.Event.objects.filter(event_category__id__in=filter_categories)
+    events = models.Event.objects.filter(event_category__id__in=filter_categories, end__lte=timezone.now())
     resp = []
     for cat in categories:
         numEvents= events.filter(event_category=cat).count()

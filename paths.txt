@@ -276,18 +276,25 @@ primjer responsea
 
 primjer responsea 
 
-[
-    {
-        "category_id": 1,
-        "category": "Ugradbeni sustavi",
-        "percentage": 50
-    },
-    {
-        "category_id": 2,
-        "category": "Umjetna inteligencija",
-        "percentage": 33
+{
+    "filters": [
+        {
+            "category_id": 1,
+            "category": "Ugradbeni sustavi",
+            "percentage": 50
+        },
+        {
+            "category_id": 2,
+            "category": "Umjetna inteligencija",
+            "percentage": 20
+        }
+    ],
+    "user": {
+        "first_name": "vjeko",
+        "last_name": "rezic",
+        "id": 3
     }
-]
+}
 
 GET api/event/5/   detalji eventa s idem 5 
 
