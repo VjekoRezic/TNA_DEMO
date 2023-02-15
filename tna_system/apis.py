@@ -55,13 +55,13 @@ class RecordController(views.APIView):
             return response.Response({"message":"Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
         if category:
             if request.user.is_superuser:
-                if models.EventCategory.objects.filter(id=category,is_deleted=False).exists():
+                if models.EventCategory.objects.filter(id=category).exists():
 
                     record_list = models.Record.objects.filter(event__event_category__id=category, user_id = user_id).all()
                 else:
                     return response.Response({"message":"Bad request - category doesnt exist"}, status=status.HTTP_400_BAD_REQUEST)
             else:
-                if models.EventCategory.objects.filter(id=category,is_deleted=False).exists():
+                if models.EventCategory.objects.filter(event__create_by= request.user, id=category).exists():
 
                     record_list = models.Record.objects.filter(event__category__id=category, user_id = user_id, event__created_by=request.user).all()
                 else:
