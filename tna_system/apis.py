@@ -337,8 +337,6 @@ class NextEvent(views.APIView):
             next = models.Event.objects.filter(is_deleted=False, location__id=location_id, start__lte=delta, end__gte=timezone.now()).first()
             next = serializers.EventSerializer(next)
             next = next.data
+            return response.Response(next, status=status.HTTP_200_OK)
         else: 
-            next={"message":"Loaction doesn't have any events!"}
-
-        return response.Response(next, status=status.HTTP_200_OK)
-
+            return response.Response(status=status.HTTP_204_NO_CONTENT)
