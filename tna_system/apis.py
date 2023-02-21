@@ -33,16 +33,21 @@ class RecordController(views.APIView):
             return response.Response({"message:Bad request"}, status=status.HTTP_400_BAD_REQUEST)
         if card_id != None and usermodels.User.objects.filter(card_id=card_id, is_deleted=False).exists():
             user = usermodels.User.objects.filter(card_id=card_id, is_deleted=False).first()
+            userData = userserializer.UserSerializer(user).data
+            userFilteredData = {
+                "first_name": userData["first_name"],
+                "last_name": userData["last_name"],
+            }
         else:
            return response.Response({"message:Bad request"}, status=status.HTTP_400_BAD_REQUEST)
         #ako postoje user i event onda provjeravimo postoji li već zapis za tog studenta , ako postoji onda upisujemo izlazak
         if models.Record.objects.filter(event=event, user=user).exists():
             services.create_record_out(user = user , event = event)
-            return response.Response({"message":"Exit record created"}, status=status.HTTP_201_CREATED)
+            return response.Response({"user": userFilteredData, "type": "OUT"}, status=status.HTTP_201_CREATED)
         else:
             
             services.create_record_in(user=user, event = event)
-            return response.Response({"message":"Entrance record created"}, status=status.HTTP_201_CREATED)
+            return response.Response({"user": userFilteredData, "type": "IN"}, status=status.HTTP_201_CREATED)
     
     def get(self,request, user_id=None):
         #get request za records po osobi - +filter po kategoriji 
